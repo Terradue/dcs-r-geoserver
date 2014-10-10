@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
+ <jobTemplates>
+    <jobTemplate id="geo-proc">
+      <streamingExecutable>/application/geo-proc/run.R</streamingExecutable>
+      <defaultParameters>
+      <!--
+        <parameter id="catalogue">http://catalogue.terradue.int/catalogue/search/LANDSAT_8/rdf</parameter>
+        <parameter id="startdate" title="Start date" abstract="Start date of the TOI. Used as queryable for the MERIS Level 1 catalogue" scope="runtime" type="opensearch" target="time:start">2013-12-18T09:35:28</parameter>
+        <parameter id="enddate" title="End date" abstract="End date of the TOI. Used as queryable for the MERIS Level 1 catalogue" scope="runtime" type="opensearch" target="time:end">2014-01-11T09:36:00</parameter>
+      -->
+      </defaultParameters>
+      <defaultJobconf>
+          <property id="mapred.task.timeout">600000000</property>
+      </defaultJobconf>
+    </jobTemplate>
+  </jobTemplates>
+  <workflow id="myworkflow" title="My workflow" abstract="GeoServer application">
+    <workflowVersion>1.0</workflowVersion>
+    <node id="n-geo-proc">
+      <job id="geo-proc"/>
+      <sources>
+      <!--
+        <source refid="cas:series">http://catalogue.terradue.int/catalogue/search/LANDSAT_8/rdf</source>
+      -->
+      </sources>
+      <parameters>
+        <!-- list of parameters if needed -->
+      </parameters>
+    </node>
+  </workflow>
+</application>
