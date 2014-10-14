@@ -8,7 +8,7 @@ library("stringr")
 # load the application package when mvn installed it
 library(rGeoServer, lib.loc="/application/share/R/library")
 library(rLandsat8, lib.loc="/application/share/R/library")
-
+load("/application/.geoserver.authn.RData")
 
 # get the GeoServer REST access point
 geoserver <- rciop.getparam("geoserver")
@@ -48,43 +48,49 @@ while(length(ls8.ref <- readLines(f, n=1)) > 0) {
 	rciop.log("INFO", paste0("Loading", ls8.identifier, "dataset"))
 	ls8 <- ReadLandsat8(ls8.identifier, aoi.extent)
 
+	r <- raster()
 	if (GetOrbitDirection(ls8) == 'A') {
-		rciop.log("INFO", "Ascending orbit, saving TIRS1 band")
+                rciop.log("INFO", "Ascending orbit, saving TIRS1 band")
 
-		# ascending direction, get AtSatelliteBrightnessTemperature from TIRS1 
-		bt <- ToAtSatelliteBrightnessTemperature(ls8, band="tirs1")
-		r <- projectRaster(bt, crs=dest.proj)
+                # ascending direction, get AtSatelliteBrightnessTemperature from TIRS1 
+                bt <- ToAtSatelliteBrightnessTemperature(ls8, band="tirs1")
+                rciop.log("INFO", "project raster start")
+                r <- projectRaster(bt, crs=dest.proj)
+                rciop.log("INFO", "project raster end")
 
-	} else {
+    } else {
 
-		rciop.log("INFO", "Descending orbit, saving RGB image")
+                rciop.log("INFO", "Descending orbit, saving RGB image")
 
-		# descending direction, get RGB from "swir2", "nir", "green" bands
-		raster.image <- ToRGB(ls8, "swir2", "nir", "green") 
-		r <- projectRaster(raster.image, crs=dest.proj)    
-	}
+                # descending direction, get RGB from "swir2", "nir", "green" bands
+                raster.image <- ToRGB(ls8, "swir2", "nir", "green")
+                rciop.log("INFO", "project raster start")
+                r <- projectRaster(raster.image, crs=dest.proj)
+                rciop.log("INFO", "project raster end")
+    }
 
-
-	# define the coverage store name
-	# coverage.store <- paste("sla", format(as.Date(coverages$start[i]), format="%Y-%m"), sep="_")
-	coverage.store <- paste("Etna", ls8$metadata$date_acquired, format="%Y-%m"), sep="_")
-	CreateGeoServerCoverageStore(geoserver, 
-		                        country.code,
-		                        coverage.store,
-		                        TRUE,
-		                        "GeoTIFF",
-		                        "file:data/raster.tif")
-
-	POSTraster(geoserver, country.code, coverage.store, r)
+    rciop.log("INFO", "starting post raster operation")
+    # define the coverage store name
+    # coverage.store <- paste("sla", format(as.Date(coverages$start[i]), format="%Y-%m"), sep="_")
+    coverage.store <- paste("Etna", ls8$metadata$date_acquired, sep="_")
+    rciop.log("INFO", paste0("coverage.store = ",coverage.store))
+    CreateGeoServerCoverageStore(geoserver,
+                                    country.code,
+                                    coverage.store,
+                                    TRUE,
+                                    "GeoTIFF",
+                                    "file:data/raster.tif")
+    rciop.log("INFO", "Executing POSTRaster")
+    POSTraster(geoserver, country.code, coverage.store, r)
 
 
 	# publish it
-	res <- rciop.publish(ls8.png, recursive=FALSE, metalink=TRUE)
-	if (res$exit.code==0) { published <- res$output }
+	# res <- rciop.publish(ls8.png, recursive=FALSE, metalink=TRUE)
+	# if (res$exit.code==0) { published <- res$output }
 
 	# publish it
-	res <- rciop.publish(ls8.tif, recursive=FALSE, metalink=TRUE)
-	if (res$exit.code==0) { published <- res$output }
+	# res <- rciop.publish(ls8.tif, recursive=FALSE, metalink=TRUE)
+	# if (res$exit.code==0) { published <- res$output }
 
 	# clean up
 	rciop.log("INFO", "Cleaning-up")

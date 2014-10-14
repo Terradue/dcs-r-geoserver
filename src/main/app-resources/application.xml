@@ -5,7 +5,6 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
     <jobTemplate id="geo-proc">
       <streamingExecutable>/application/geo-proc/run.R</streamingExecutable>
       <defaultParameters>
-        <parameter id="geoserver">10.10.31.90:8080/geoserver/rest</parameter>
         <parameter id="catalogue">http://catalogue.terradue.int/catalogue/search/LANDSAT_8/rdf</parameter>
         <parameter id="startdate" title="Start date" abstract="Start date of the TOI. Used as queryable for the MERIS Level 1 catalogue" scope="runtime" type="opensearch" target="time:start">2013-12-18T09:35:28</parameter>
         <parameter id="enddate" title="End date" abstract="End date of the TOI. Used as queryable for the MERIS Level 1 catalogue" scope="runtime" type="opensearch" target="time:end">2014-01-11T09:36:00</parameter>
