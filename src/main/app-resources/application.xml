@@ -9,6 +9,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
         <parameter id="catalogue">http://catalogue.terradue.int/catalogue/search/LANDSAT_8/rdf</parameter>
         <parameter id="startdate" title="Start date" abstract="Start date of the TOI. Used as queryable for the MERIS Level 1 catalogue" scope="runtime" type="opensearch" target="time:start">2013-12-18T09:35:28</parameter>
         <parameter id="enddate" title="End date" abstract="End date of the TOI. Used as queryable for the MERIS Level 1 catalogue" scope="runtime" type="opensearch" target="time:end">2014-01-11T09:36:00</parameter>
+        <parameter id="extent" title="AOI extent" abstract="AOI extent expressed as minx,miny,maxx,maxy in UTM coordinates (e.g. 479599,4158632,519599,4198632)" scope="runtime">479599,4158632,519599,4198632</parameter>
       </defaultParameters>
       <defaultJobconf>
           <property id="mapred.task.timeout">600000000</property>
@@ -22,12 +23,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
       <sources>
         <source refid="cas:series">http://catalogue.terradue.int/catalogue/search/LANDSAT_8/rdf</source>
       </sources>
-      <parameters>
-        <parameter id="xmin">482679</parameter>
-        <parameter id="xmax">513603</parameter>
-        <parameter id="ymin">4164217</parameter>
-        <parameter id="tmax">4196121</parameter>
-      </parameters>
+      <parameters></parameters>
     </node>
   </workflow>
 </application>

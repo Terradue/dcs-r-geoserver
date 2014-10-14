@@ -3,7 +3,7 @@
 # load rciop library to access the developer cloud sandbox functions
 library("rciop")
 library("rgeos")
-library(stringr)
+library("stringr")
 
 # load the application package when mvn installed it
 library(rGeoServer, lib.loc="/application/share/R/library")
