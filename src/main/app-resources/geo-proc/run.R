@@ -12,7 +12,7 @@ load("/application/.geoserver.authn.RData")
 
 # get the GeoServer REST access point
 geoserver <- rciop.getparam("geoserver")
-
+rciop.log("INFO", paste("geoserver", geoserver))
 # get the extent of the area of interest in UTM coordinates, Landsat scenes will be clipped 
 aoi.bbox <- as.numeric(unlist(strsplit(rciop.getparam("extent"), ",")))
 aoi.extent <- extent(aoi.bbox[1], aoi.bbox[3], aoi.bbox[2], aoi.bbox[4])
