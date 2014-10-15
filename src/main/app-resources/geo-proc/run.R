@@ -12,7 +12,6 @@ load("/application/.geoserver.authn.RData")
 
 # get the GeoServer REST access point
 geoserver <- rciop.getparam("geoserver")
-rciop.log("INFO", paste("geoserver", geoserver))
 # get the extent of the area of interest in UTM coordinates, Landsat scenes will be clipped 
 aoi.bbox <- as.numeric(unlist(strsplit(rciop.getparam("extent"), ",")))
 aoi.extent <- extent(aoi.bbox[1], aoi.bbox[3], aoi.bbox[2], aoi.bbox[4])
@@ -52,29 +51,19 @@ while(length(ls8.ref <- readLines(f, n=1)) > 0) {
 	r <- raster()
 	if (GetOrbitDirection(ls8) == 'A') {
                 rciop.log("INFO", "Ascending orbit, saving TIRS1 band")
-
                 # ascending direction, get AtSatelliteBrightnessTemperature from TIRS1 
                 bt <- ToAtSatelliteBrightnessTemperature(ls8, band="tirs1")
-                rciop.log("INFO", "project raster start")
-                r <- projectRaster(bt, crs=dest.proj)
-                rciop.log("INFO", "project raster end")
-
+                coverage.store <- paste("Thermal", ls8.identifier, sep="_")
     } else {
-
                 rciop.log("INFO", "Descending orbit, saving RGB image")
-
                 # descending direction, get RGB from "swir2", "nir", "green" bands
                 raster.image <- ToRGB(ls8, "swir2", "nir", "green")
-                rciop.log("INFO", "project raster start")
-                r <- projectRaster(raster.image, crs=dest.proj)
-                rciop.log("INFO", "project raster end")
+                coverage.store <- paste("Colours", ls8.identifier, sep="_")
+     
     }
+    r <- projectRaster(bt, crs=dest.proj)
 
-    rciop.log("INFO", "starting post raster operation")
-    # define the coverage store name
-    # coverage.store <- paste("sla", format(as.Date(coverages$start[i]), format="%Y-%m"), sep="_")
-    coverage.store <- paste("Etna", ls8$metadata$date_acquired, sep="_")
-    rciop.log("INFO", paste0("coverage.store = ",coverage.store))
+    rciop.log("INFO", paste0("coverage.store = ",coverage.store))   
     CreateGeoServerCoverageStore(geoserver,
                                     workspace.name,
                                     coverage.store,
