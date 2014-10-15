@@ -5,7 +5,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="${artifactId}">
     <jobTemplate id="geo-proc">
       <streamingExecutable>/application/geo-proc/run.R</streamingExecutable>
       <defaultParameters>
-        <parameter id="catalogue">http://catalogue.terradue.int/catalogue/search/LANDSAT_8/rdf</parameter>
+        <!--<parameter id="catalogue">http://catalogue.terradue.int/catalogue/search/LANDSAT_8/rdf</parameter>-->
         <parameter id="startdate" title="Start date" abstract="Start date of the TOI. Used as queryable for the MERIS Level 1 catalogue" scope="runtime" type="opensearch" target="time:start">2013-12-18T09:35:28</parameter>
         <parameter id="enddate" title="End date" abstract="End date of the TOI. Used as queryable for the MERIS Level 1 catalogue" scope="runtime" type="opensearch" target="time:end">2014-01-11T09:36:00</parameter>
         <parameter id="extent" title="AOI extent" abstract="AOI extent expressed as minx,miny,maxx,maxy in UTM coordinates (e.g. 479599,4158632,519599,4198632)" scope="runtime">479599,4158632,519599,4198632</parameter>

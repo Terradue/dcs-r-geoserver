@@ -17,7 +17,6 @@ geoserver <- rciop.getparam("geoserver")
 aoi.bbox <- as.numeric(unlist(strsplit(rciop.getparam("extent"), ",")))
 aoi.extent <- extent(aoi.bbox[1], aoi.bbox[3], aoi.bbox[2], aoi.bbox[4])
 
-country.code <- "ITA"
 dest.proj <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs" 
 
 # read the inputs coming from stdin
@@ -26,9 +25,11 @@ open(f)
 
 setwd(TMPDIR)
 
+# create the workspace on GeoServer
+workspace.name <- "Test.GeoServer"
+CreateGeoServerWorkspace(geoserver, workspace.name)
+
 while(length(ls8.ref <- readLines(f, n=1)) > 0) {
-  	# create the country workspace on GeoServer
-	CreateGeoServerWorkspace(geoserver, country.code)
 
 	rciop.log("INFO", paste("processing product", ls8.ref))
 
@@ -75,13 +76,13 @@ while(length(ls8.ref <- readLines(f, n=1)) > 0) {
     coverage.store <- paste("Etna", ls8$metadata$date_acquired, sep="_")
     rciop.log("INFO", paste0("coverage.store = ",coverage.store))
     CreateGeoServerCoverageStore(geoserver,
-                                    country.code,
+                                    workspace.name,
                                     coverage.store,
                                     TRUE,
                                     "GeoTIFF",
                                     "file:data/raster.tif")
     rciop.log("INFO", "Executing POSTRaster")
-    POSTraster(geoserver, country.code, coverage.store, r)
+    POSTraster(geoserver, workspace.name, coverage.store, r)
 
 
 	# publish it
