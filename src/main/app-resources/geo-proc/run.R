@@ -53,25 +53,40 @@ while(length(ls8.ref <- readLines(f, n=1)) > 0) {
                 rciop.log("INFO", "Ascending orbit, saving TIRS1 band")
                 # ascending direction, get AtSatelliteBrightnessTemperature from TIRS1 
                 bt <- ToAtSatelliteBrightnessTemperature(ls8, band="tirs1")
-                coverage.store <- paste("Thermal", ls8.identifier, sep="_")
+                coverage.store <- paste("Thermal", ls8.identifier, sep="_")               
     } else {
                 rciop.log("INFO", "Descending orbit, saving RGB image")
                 # descending direction, get RGB from "swir2", "nir", "green" bands
                 raster.image <- ToRGB(ls8, "swir2", "nir", "green")
-                coverage.store <- paste("Colours", ls8.identifier, sep="_")
-     
+                coverage.store <- paste("Colours", ls8.identifier, sep="_")    
     }
-    r <- projectRaster(bt, crs=dest.proj)
+
+    tryCatch({r <- projectRaster(bt, crs=dest.proj)},
+                	error = function(err){
+                		rciop.log("INFO",paste("projectRaster error:",err))
+                })
+    
+
 
     rciop.log("INFO", paste0("coverage.store = ",coverage.store))   
-    CreateGeoServerCoverageStore(geoserver,
-                                    workspace.name,
-                                    coverage.store,
-                                    TRUE,
-                                    "GeoTIFF",
-                                    "file:data/raster.tif")
+    
+    tryCatch({
+    			CreateGeoServerCoverageStore(geoserver,
+                			                    workspace.name,
+                            			        coverage.store,
+			                                    TRUE,
+			                                    "GeoTIFF",
+			                                    "file:data/raster.tif")},
+                	error = function(err){
+                		rciop.log("INFO",paste("CreateGeoServerCoverageStore error:",err))
+            })
+    
     rciop.log("INFO", "Executing POSTRaster")
-    POSTraster(geoserver, workspace.name, coverage.store, r)
+    tryCatch({POSTraster(geoserver, workspace.name, coverage.store, r)},
+                	error = function(err){
+                		rciop.log("INFO",paste("POSTraster error:",err))
+            })
+    
 
 
 	# publish it
