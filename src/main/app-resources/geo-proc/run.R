@@ -52,20 +52,20 @@ while(length(ls8.ref <- readLines(f, n=1)) > 0) {
 	coverage.name <- ""
 	if (GetOrbitDirection(ls8) == 'A') {
                 # ascending direction, get AtSatelliteBrightnessTemperature from TIRS1 
-                bt <- ToAtSatelliteBrightnessTemperature(ls8, band="tirs1")
+                r <- ToAtSatelliteBrightnessTemperature(ls8, band="tirs1")
                 coverage.name <- "Thermal"
     } else {
                 # descending direction, get RGB from "swir2", "nir", "green" bands
-                raster.image <- ToRGB(ls8, "swir2", "nir", "green")
+                r <- ToRGB(ls8, "swir2", "nir", "green")
                 coverage.name <- "Colours"
     }
 	
 	coverage.store <- paste(coverage.name, ls8.identifier, sep="_")               
 	rciop.log("INFO", paste0("coverage.store = ",coverage.store))   
-    r <- projectRaster(bt, crs=dest.proj)
+    r <- projectRaster(r, crs=dest.proj)
     
     # save the raster to hdsf
-    tmp.file <- paste(coverage.store, ".tif", sep =".")
+    tmp.file <- paste(coverage.store, "tif", sep =".")
     rciop.log("INFO", paste("Save raster to", tmp.file, "file"))
   	writeRaster(r, filename=tmp.file, format="GTiff", overwrite=TRUE)
     res <- rciop.publish(tmp.file, recursive=FALSE, metalink=TRUE)
