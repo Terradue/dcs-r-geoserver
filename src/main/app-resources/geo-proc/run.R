@@ -65,9 +65,9 @@ while(length(ls8.ref <- readLines(f, n=1)) > 0) {
     r <- projectRaster(bt, crs=dest.proj)
     
     # save the raster to hdsf
-    tmp.file <- paste(coverage.name, ".tif", sep =".")
+    tmp.file <- paste(coverage.store, ".tif", sep =".")
     rciop.log("INFO", paste("Save raster to", tmp.file, "file"))
-  	writeRaster(raster, filename=tmp.file, format="GTiff", overwrite=TRUE)
+  	writeRaster(r, filename=tmp.file, format="GTiff", overwrite=TRUE)
     res <- rciop.publish(tmp.file, recursive=FALSE, metalink=TRUE)
   	if (res$exit.code==0) { published <- res$output }
 	rciop.log("INFO", paste("File", tmp.file, "saved"))
