@@ -64,8 +64,14 @@ while(length(ls8.ref <- readLines(f, n=1)) > 0) {
 	rciop.log("INFO", paste0("coverage.store = ",coverage.store))   
     r <- projectRaster(bt, crs=dest.proj)
     
-    
-    
+    # save the raster to hdsf
+    tmp.file <- paste(coverage.name, ".tif", sep =".")
+    rciop.log("INFO", paste("Save raster to", tmp.file, "file"))
+  	writeRaster(raster, filename=tmp.file, format="GTiff", overwrite=TRUE)
+    res <- rciop.publish(tmp.file, recursive=FALSE, metalink=TRUE)
+  	if (res$exit.code==0) { published <- res$output }
+	rciop.log("INFO", paste("File", tmp.file, "saved"))
+
 	CreateGeoServerCoverageStore(geoserver,
 			                    workspace.name,
             			        coverage.store,
@@ -76,8 +82,10 @@ while(length(ls8.ref <- readLines(f, n=1)) > 0) {
     rciop.log("INFO", "Executing POSTRaster")
     POSTraster(geoserver, workspace.name, coverage.store, r)
 
+
 	# clean up
 	rciop.log("INFO", "Cleaning-up")
+	file.remove(tmp.file)
 	unlink(paste(TMPDIR, ls8.identifier, sep="/"), recursive=TRUE)
 
 }
