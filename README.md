@@ -1,2 +1,2 @@
-dcs-r-geoserver-thermal
-======================
+dcs-r-geoserver
+===============
